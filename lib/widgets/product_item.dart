@@ -17,7 +17,7 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final product = Provider.of<Product>(context);
+    final product = Provider.of<Product>(context, listen: false,);
 
     return Container(
       decoration: BoxDecoration(
@@ -47,12 +47,15 @@ class ProductItem extends StatelessWidget {
               style: Theme.of(context).textTheme.headline6,
             ),
             backgroundColor: Colors.black87,
-            leading: IconButton(
-              icon: Icon(product.isFavorite ? Icons.favorite : Icons.favorite_border,),
-              onPressed: () {
-                product.toggleFavoriteStatus();
-              },
-              color: Theme.of(context).accentColor,
+            leading: Consumer<Product>(
+              builder: (ctx, product, child) => IconButton(
+                icon: Icon(product.isFavorite ? Icons.favorite : Icons.favorite_border,),
+                onPressed: () {
+                  product.toggleFavoriteStatus();
+                },
+                color: Theme.of(context).accentColor,
+              ),
+
             ),
             trailing: IconButton(
               icon: Icon(Icons.shopping_cart),

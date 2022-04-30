@@ -5,27 +5,26 @@ import '../providers/product.dart';
 import '../providers/cart.dart';
 
 class ProductItem extends StatelessWidget {
- // final String id;
- // final String title;
- // final String imageUrl;
+  // final String id;
+  // final String title;
+  // final String imageUrl;
 //
- // ProductItem(
- //   this.id,
- //   this.title,
- //   this.imageUrl,
- // );
+  // ProductItem(
+  //   this.id,
+  //   this.title,
+  //   this.imageUrl,
+  // );
 
   @override
   Widget build(BuildContext context) {
-
-    final product = Provider.of<Product>(context, listen: false,);
+    final product = Provider.of<Product>(
+      context,
+      listen: false,
+    );
     final cart = Provider.of<Cart>(context);
     return Container(
       decoration: BoxDecoration(
-
-        color: Colors.black87,
-        borderRadius: BorderRadius.circular(10)
-      ),
+          color: Colors.black87, borderRadius: BorderRadius.circular(10)),
       padding: EdgeInsets.all(2),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
@@ -35,9 +34,10 @@ class ProductItem extends StatelessWidget {
               product.imageUrl,
               fit: BoxFit.cover,
             ),
-            onTap: (){
-              Navigator.of(context).pushNamed(ProductDetailScreen.routeName,
-              arguments: product.id,
+            onTap: () {
+              Navigator.of(context).pushNamed(
+                ProductDetailScreen.routeName,
+                arguments: product.id,
               );
             },
           ),
@@ -50,18 +50,39 @@ class ProductItem extends StatelessWidget {
             backgroundColor: Colors.black87,
             leading: Consumer<Product>(
               builder: (ctx, product, child) => IconButton(
-                icon: Icon(product.isFavorite ? Icons.favorite : Icons.favorite_border,),
+                icon: Icon(
+                  product.isFavorite ? Icons.favorite : Icons.favorite_border,
+                ),
                 onPressed: () {
                   product.toggleFavoriteStatus();
                 },
                 color: Theme.of(context).accentColor,
               ),
-
             ),
             trailing: IconButton(
               icon: Icon(Icons.shopping_cart),
               onPressed: () {
-                cart.addItem(product.id, product.price, product.title,);
+                cart.addItem(
+                  product.id,
+                  product.price,
+                  product.title,
+                );
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Added item to cart!',
+                      textAlign: TextAlign.center,
+                    ),
+                    duration: Duration(seconds: 2),
+                    action: SnackBarAction(
+                      label: 'UNDO',
+                      onPressed: () {
+                        cart.removeSingleItem(product.id);
+                      },
+                    ),
+                  ),
+                );
               },
               color: Theme.of(context).accentColor,
             ),

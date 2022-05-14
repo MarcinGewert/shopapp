@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shopapp/screens/product_detail_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/product.dart';
+
 import '../providers/cart.dart';
 
 class ProductItem extends StatelessWidget {
@@ -17,6 +18,7 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scaffoldOf = Scaffold.of(context);
     final product = Provider.of<Product>(
       context,
       listen: false,
@@ -53,8 +55,14 @@ class ProductItem extends StatelessWidget {
                 icon: Icon(
                   product.isFavorite ? Icons.favorite : Icons.favorite_border,
                 ),
-                onPressed: () {
-                  product.toggleFavoriteStatus();
+                onPressed: () async {
+                  try {
+                    await product.toggleFavoriteStatus();
+                  } catch (error) {
+                    scaffoldOf.hideCurrentSnackBar();
+                    scaffoldOf.showSnackBar(SnackBar(
+                        content: Text('Could not un/Favorite item'),));
+                  }
                 },
                 color: Theme.of(context).accentColor,
               ),
